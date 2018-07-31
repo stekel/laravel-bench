@@ -1,0 +1,25 @@
+{
+    "name": "stekel/laravel-bench",
+    "description": "Php wrapper for Apache-Bench with Laravel integration.",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">7.0",
+        "phpunit/phpunit": ">6.0",
+        "illuminate/console": "^5.6",
+        "illuminate/support": "^5.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "stekel\\LaravelBench\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "stekel\\LaravelBench\\LaravelBenchServiceProvider"
+            ],
+            "aliases": {}
+        }
+    }
+}
