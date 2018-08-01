@@ -59,6 +59,6 @@ class ApacheBench {
     
     public function execute() {
     
-        return shell_exec($this->executable.$this->options.$this->url);
+        return (new Result(shell_exec($this->executable.$this->options.$this->url)));
     }
 }

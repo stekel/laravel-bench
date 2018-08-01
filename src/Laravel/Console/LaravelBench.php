@@ -54,61 +54,16 @@ class LaravelBench extends Command {
         
         $this->info('Executing test "'.$this->argument('test').'"...');
         
-        $output = $assessment->execute();
+        $result = $assessment->execute();
         
-        $this->info($this->cleanOutput($output));
-    }
-    
-    private function cleanOutput($output) {
-        
-        $cleanedOutput = '';
-        
-        foreach (explode("\n", $output, 100) as $index => $line) {
-            
-            if (starts_with($line, 'This is ApacheBench')) {
-                continue;
-            }
-            
-            if (starts_with($line, 'Copyright 1996')) {
-                continue;
-            }
-            
-            if (starts_with($line, 'Licensed to The Apache')) {
-                continue;
-            }
-            
-            if (starts_with($line, 'Benchmarking ')) {
-                continue;
-            }
-            
-            if ($line == '') {
-                continue;
-            }
-            
-            if (starts_with($line, 'Connection Times ')) {
-                continue;
-            }
-            
-            if (ends_with($line, ' max')) {
-                continue;
-            }
-            
-            if (starts_with($line, 'Connect: ')) {
-                continue;
-            }
-            if (starts_with($line, 'Processing: ')) {
-                continue;
-            }
-            if (starts_with($line, 'Waiting: ')) {
-                continue;
-            }
-            if (starts_with($line, 'Total: ')) {
-                continue;
-            }
-            
-            $cleanedOutput .= $line."\n";
-        }
-        
-        return $cleanedOutput;
+        $this->table([
+            'Metric',
+            'Value'
+        ], [
+            ['Total Time', $result->totalTime.' sec'],
+            ['Failed Requests', $result->failedRequests],
+            ['Total Transfered', $result->totalTransferred.' bytes'],
+            ['Requests Per Second', $result->requestsPerSecond],
+        ]);
     }
 }
