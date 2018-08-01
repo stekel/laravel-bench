@@ -44,20 +44,19 @@ class LaravelBench extends Command {
             throw new \Execption('Apache Bench is not installed.');
         }
         
-        switch($this->argument('test')) {
-            case 'homepage':
-                $class = 'stekel\LaravelBench\Tests\\'.studly_case($this->argument('test'));
-                
-                $this->info($class.' running...');
-                $output = (new $class())->handle();
-                
-                $this->info($this->cleanOutput($output));
-                
-                break;
-                
-            default:
-                $this->info('No test with the name of "'.$this->argument('test').'"');
+        $assessment = app('assessment')->findBySlug($this->argument('test'));
+        
+        if (is_null($assessment)) {
+            
+            $this->info('No test with the name of "'.$this->argument('test').'"');
+            return;
         }
+        
+        $this->info('Executing test "'.$this->argument('test').'"...');
+        
+        $output = $assessment->execute();
+        
+        $this->info($this->cleanOutput($output));
     }
     
     private function cleanOutput($output) {

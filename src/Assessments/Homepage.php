@@ -1,6 +1,6 @@
 <?php
 
-namespace stekel\LaravelBench\Tests;
+namespace stekel\LaravelBench\Assessments;
 
 use stekel\LaravelBench\ApacheBench;
 
@@ -12,7 +12,9 @@ class Homepage {
     
     public $requests = 100;
     
-    public function handle() {
+    public $slug = 'homepage';
+    
+    public function execute() {
     
         return (new ApacheBench())
             ->noPercentageTable()
