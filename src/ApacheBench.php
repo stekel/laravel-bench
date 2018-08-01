@@ -15,6 +15,13 @@ class ApacheBench {
         return $this;
     }
     
+    public function ignoreLengthErrors() {
+    
+        $this->options .= ' -l ';
+        
+        return $this;
+    }
+    
     public function noProgressOutput() {
     
         $this->options .= ' -q ';

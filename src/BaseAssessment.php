@@ -12,6 +12,7 @@ abstract class Assessment implements AssessmentContract {
     private function viaApacheBench() {
         
         return (new ApacheBench())
+            ->ignoreLengthErrors()
             ->noPercentageTable()
             ->noProgressOutput()
             ->concurrency($this->concurrency)
