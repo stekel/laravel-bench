@@ -2,9 +2,9 @@
 
 namespace stekel\LaravelBench\Assessments;
 
-use stekel\LaravelBench\ApacheBench;
+use stekel\LaravelBench\Assessment;
 
-class Homepage {
+class Homepage extends Assessment {
     
     public $path = '/';
     
@@ -13,15 +13,4 @@ class Homepage {
     public $requests = 100;
     
     public $slug = 'homepage';
-    
-    public function execute() {
-    
-        return (new ApacheBench())
-            ->noPercentageTable()
-            ->noProgressOutput()
-            ->concurrency($this->concurrency)
-            ->requests($this->requests)
-            ->url(url($this->path))
-            ->execute();
-    }
 }

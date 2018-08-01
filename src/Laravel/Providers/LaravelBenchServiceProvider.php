@@ -3,7 +3,7 @@
 namespace stekel\LaravelBench;
 
 use Illuminate\Support\ServiceProvider;
-use stekel\LaravelBench\Assessment;
+use stekel\LaravelBench\AssessmentManager;
 use stekel\LaravelBench\Laravel\Console\LaravelBench as LaravelBenchCommand;
 
 class LaravelBenchServiceProvider extends ServiceProvider
@@ -16,12 +16,25 @@ class LaravelBenchServiceProvider extends ServiceProvider
     protected $defer = true;
     
     /**
+     * Assessments
+     *
+     * @var array
+     */
+    protected $assessments = [
+        Assessments\Homepage::class,
+    ];
+    
+    /**
      * Bootstrap the application services.
      *
      * @return void
      */
     public function boot()
     {
+        $this->publishes([
+            __DIR__.'/../Config/bench.php' => config_path('bench.php'),
+        ]);
+        
         if ($this->app->runningInConsole()) {
             
             $this->commands([
@@ -37,10 +50,15 @@ class LaravelBenchServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->mergeConfigFrom(
+            __DIR__.'/../Config/bench.php', 'bench'
+        );
+        
         $this->app->singleton('assessment', function($app) {
-            return new Assessment([
-                Assessments\Homepage::class,
-            ]);
+            
+            $this->assessments = array_merge($this->assessments, config('bench.custom_assessments'));
+            
+            return new AssessmentManager($this->assessments);
         });
     }
     
@@ -52,7 +70,6 @@ class LaravelBenchServiceProvider extends ServiceProvider
     public function provides()
     {
         return [
-            Assessment::class,
             'assessment'
         ];
     }

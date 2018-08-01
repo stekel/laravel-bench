@@ -2,7 +2,7 @@
 
 namespace stekel\LaravelBench;
 
-class Assessment {
+class AssessmentManager {
     
     /**
      * Assesments
@@ -12,14 +12,20 @@ class Assessment {
     protected $assessments;
     
     public function __construct(array $assessments) {
-    
+        
         $this->assessments = collect($assessments)->transform(function($assessment) {
-            return new $assessment();
-        });
+            
+            if (class_exists($assessment)) {
+                
+                return new $assessment();
+            }
+            
+            return null;
+        })->filter();
     }
     
     public function findBySlug($slug) {
-    
+        
         return $this->assessments->first(function($assessment) use($slug) {
             return $assessment->slug == $slug;
         });
