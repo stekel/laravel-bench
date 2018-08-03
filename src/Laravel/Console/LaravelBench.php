@@ -44,15 +44,35 @@ class LaravelBench extends Command {
             throw new \Execption('Apache Bench is not installed.');
         }
         
-        $assessment = app('assessment')->findBySlug($this->argument('test'));
-        
-        if (is_null($assessment)) {
+        switch ($this->argument('test')) {
+            case 'all':
+                app('assessment')->all()->each(function($assessment) {
+                    $this->executeWithOutput($assessment);
+                });
+                break;
             
-            $this->info('No test with the name of "'.$this->argument('test').'"');
-            return;
+            default:
+                $assessment = app('assessment')->findBySlug($this->argument('test'));
+                
+                if (is_null($assessment)) {
+                    
+                    $this->info('No test with the name of "'.$this->argument('test').'"');
+                    return;
+                }
+                
+                $this->execute($assessment);
         }
+    }
+    
+    /**
+     * Execute the given assessment
+     *
+     * @param  Assessment $assessment
+     * @return mixed
+     */
+    private function executeWithOutput($assessment) {
         
-        $this->info('Executing test "'.$this->argument('test').'"...');
+        $this->info('Executing test "'.get_class($assessment).'"...');
         
         $result = $assessment->execute();
         
