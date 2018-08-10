@@ -5,13 +5,20 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">7.0",
-        "phpunit/phpunit": ">6.0",
         "illuminate/console": "^5.5",
         "illuminate/support": "^5.5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7"
     },
     "autoload": {
         "psr-4": {
             "stekel\\LaravelBench\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "stekel\\LaravelBench\\Tests\\": "tests/"
         }
     },
     "extra": {
