@@ -60,7 +60,7 @@ class LaravelBench extends Command {
                     return;
                 }
                 
-                $this->execute($assessment);
+                $this->executeWithOutput($assessment);
         }
     }
     
