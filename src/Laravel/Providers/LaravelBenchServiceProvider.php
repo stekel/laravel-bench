@@ -4,6 +4,7 @@ namespace stekel\LaravelBench\Laravel\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use stekel\LaravelBench\AssessmentManager;
+use stekel\LaravelBench\Assessments\Homepage;
 use stekel\LaravelBench\Laravel\Console\LaravelBench as LaravelBenchCommand;
 
 class LaravelBenchServiceProvider extends ServiceProvider
@@ -21,7 +22,7 @@ class LaravelBenchServiceProvider extends ServiceProvider
      * @var array
      */
     protected $assessments = [
-        Assessments\Homepage::class,
+        Homepage::class,
     ];
 
     /**
