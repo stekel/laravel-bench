@@ -4,7 +4,6 @@ namespace stekel\LaravelBench\Laravel\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use stekel\LaravelBench\AssessmentManager;
-use stekel\LaravelBench\Assessments\Homepage;
 use stekel\LaravelBench\Laravel\Console\LaravelBench as LaravelBenchCommand;
 
 class LaravelBenchServiceProvider extends ServiceProvider
@@ -17,15 +16,6 @@ class LaravelBenchServiceProvider extends ServiceProvider
     protected $defer = true;
 
     /**
-     * Assessments
-     *
-     * @var array
-     */
-    protected $assessments = [
-        Homepage::class,
-    ];
-
-    /**
      * Bootstrap the application services.
      *
      * @return void
@@ -36,8 +26,19 @@ class LaravelBenchServiceProvider extends ServiceProvider
             __DIR__.'/../Config/bench.php' => config_path('bench.php'),
         ]);
 
-        if ($this->app->runningInConsole()) {
+        if (app()->environment(config('bench.valid_environments'))) {
+            $this->app['router']->get('performance/{slug}', function ($slug) {
+                $assessment = app('assessment')->findBySlug($slug);
 
+                if (is_null($assessment)) {
+                    abort(404);
+                }
+
+                return $assessment->route();
+            });
+        }
+
+        if ($this->app->runningInConsole()) {
             $this->commands([
                 LaravelBenchCommand::class,
             ]);
@@ -52,14 +53,12 @@ class LaravelBenchServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(
-            __DIR__.'/../Config/bench.php', 'bench'
+            __DIR__.'/../Config/bench.php',
+            'bench'
         );
 
-        $this->app->singleton('assessment', function($app) {
-
-            $this->assessments = array_merge($this->assessments, config('bench.custom_assessments'));
-
-            return new AssessmentManager($this->assessments);
+        $this->app->singleton('assessment', function () {
+            return new AssessmentManager(config('bench.custom_assessments'));
         });
     }
 

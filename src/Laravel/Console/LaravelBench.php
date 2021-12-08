@@ -3,9 +3,11 @@
 namespace stekel\LaravelBench\Laravel\Console;
 
 use Illuminate\Console\Command;
+use stekel\LaravelBench\Assessment;
 
-class LaravelBench extends Command {
-    
+class LaravelBench extends Command
+{
+
     /**
      * The name and signature of the console command.
      *
@@ -14,68 +16,53 @@ class LaravelBench extends Command {
     protected $signature = 'stekel:bench
                             {test : The name of the test to run}
                             ';
-    
+
     /**
      * The console command description.
      *
      * @var string
      */
     protected $description = 'Benchmark a given url using ApacheBench.';
-    
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct() {
-        
-        parent::__construct();
-    }
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
      */
-    public function handle() {
-        
+    public function handle(): int
+    {
         if (is_null(shell_exec('which ab'))) {
-            
             throw new \Execption('Apache Bench is not installed.');
         }
-        
+
         switch ($this->argument('test')) {
             case 'all':
-                app('assessment')->all()->each(function($assessment) {
+                app('assessment')->all()->each(function ($assessment) {
                     $this->executeWithOutput($assessment);
                 });
                 break;
-            
+
             default:
                 $assessment = app('assessment')->findBySlug($this->argument('test'));
-                
+
                 if (is_null($assessment)) {
-                    
                     $this->info('No test with the name of "'.$this->argument('test').'"');
-                    return;
+                    return self::FAILURE;
                 }
-                
+
                 $this->executeWithOutput($assessment);
         }
+
+        return self::SUCCESS;
     }
-    
+
     /**
      * Execute the given assessment
-     *
-     * @param  Assessment $assessment
-     * @return mixed
      */
-    private function executeWithOutput($assessment) {
-        
+    private function executeWithOutput(Assessment $assessment): void
+    {
         $this->info('Executing test "'.get_class($assessment).'"...');
-        
+
         $result = $assessment->execute();
-        
+
         $this->table([
             'Metric',
             'Value'

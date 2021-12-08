@@ -4,12 +4,13 @@
     "license": "MIT",
     "minimum-stability": "dev",
     "require": {
-        "php": ">7.0",
+        "php": ">7.4",
         "illuminate/console": "^5.5 || >6.0",
         "illuminate/support": "^5.5 || >6.0",
         "laravel/helpers": "^1.1"
     },
     "require-dev": {
+        "roave/security-advisories": "dev-latest",
         "phpunit/phpunit": "^8.0"
     },
     "autoload": {
