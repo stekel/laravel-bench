@@ -66,7 +66,7 @@ class Result
     public function hasFailed(): bool
     {
         if (isset($this->values['status'])) {
-            return $this->values['status'];
+            return ! $this->values['status'];
         }
 
         return false;
