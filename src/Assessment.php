@@ -36,8 +36,10 @@ abstract class Assessment implements AssessmentContract
      * Custom route execution via slug
      *   Note: this is only enabled if $path is null
      *   Route: /performance/{$slug}
+     *
+     * @return mixed
      */
-    public function route(): void
+    public function route()
     {
     }
 
